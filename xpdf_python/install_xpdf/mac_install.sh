@@ -1,8 +1,8 @@
 #!/bin/bash
 echo "INSTALLING XPDF"
 cd /tmp/
-wget ftp://ftp.foolabs.com/pub/xpdf/xpdfbin-mac-3.04.tar.gz
-tar -xvzf xpdfbin-mac-3.04.tar.gz
-cp xpdfbin-mac-3.04/bin64/* /usr/local/bin
-cp xpdfbin-mac-3.04/doc/sample-xpdfrc /usr/local/etc/xpdfrc
+wget https://xpdfreader-dl.s3.amazonaws.com/xpdf-tools-mac-4.01.tar.gz
+tar -xvzf xpdf-tools-mac-4.01.tar.gz
+cp xpdf-tools-mac-4.01/bin64/* /usr/local/bin
+cp xpdf-tools-mac-4.01/doc/sample-xpdfrc /usr/local/etc/xpdfrc
 

@@ -2,9 +2,9 @@
 
 echo "INSTALLING XPDF"
 cd /tmp/
-wget ftp://ftp.foolabs.com/pub/xpdf/xpdfbin-linux-3.04.tar.gz
-tar -xvzf xpdfbin-linux-3.04.tar.gz
-cp xpdfbin-linux-3.04/bin64/* /usr/local/bin
-cp xpdfbin-linux-3.04/doc/sample-xpdfrc /usr/local/etc/xpdfrc
+wget https://xpdfreader-dl.s3.amazonaws.com/xpdf-tools-linux-4.01.tar.gz
+tar -xvzf xpdf-tools-linux-4.01.tar.gz
+cp xpdf-tools-linux-4.01/bin64/* /usr/local/bin
+cp xpdf-tools-linux-4.01/doc/sample-xpdfrc /usr/local/etc/xpdfrc
 
 
