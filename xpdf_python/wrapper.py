@@ -2,16 +2,56 @@ import os
 import sys
 import re
 import subprocess
+try:
+	from PIL import Image
+except ImportError:
+	print("WARNING: Install Pillow if you want to use to_png extraction!")
 
-
-
-def countPages(filename):  
+def countPages(filename):
 	''' Counts number of pages in PDF '''
 
 	# NOTE: Currently does not work 100% of the time
 	rxcountpages = re.compile(r"/Type\s*/Page([^s]|$)", re.MULTILINE|re.DOTALL)
 	data = open(filename,"r", encoding = "ISO-8859-1").read()
 	return len(rxcountpages.findall(data))
+
+def to_png(file_loc):
+	''' Converts PDF to PNG image
+
+	Args
+	- - - - - - -
+		file_loc: path to pdf document, string
+
+	Returns
+	- - - - - - -
+		pngs: list of PIL.PngImageFile
+	'''
+	try:
+		if os.path.isabs(file_loc):
+			full_file_loc = file_loc
+		else:
+			cd = os.getcwd()
+			full_file_loc = os.path.join(cd, file_loc)
+		pngs = []
+		actual_count = 0
+		num = countPages(full_file_loc)
+		# Accounts for errors occuring in countPages function
+		if num == 0:
+			num = 100
+		for i in range(num):
+			actual = i + 1
+			subprocess.call(['pdftopng', '-f', str(actual),'-l', str(actual), full_file_loc, full_file_loc.replace('.pdf','')])
+			# Opens file saved to disk
+			num_string = '-' + str(actual).zfill(6) + '.png'
+			saved_file = full_file_loc.replace('.pdf',num_string)
+			image = Image.open(saved_file)
+			pngs.append(image)
+			actual_count += 1
+			image.close()
+			os.remove(saved_file)
+		return pngs
+	except NameError:
+		raise ImportError("Pillow library is not installed!")
 
 def to_text(file_loc, page_nums = True):
 	''' Converts PDF to text
@@ -20,12 +60,12 @@ def to_text(file_loc, page_nums = True):
 	- - - - - - -
 		file_loc: path to pdf document, string
 		page_nums: whether to insert page numbers into document, boolean
-	
+
 	Returns
 	- - - - - - -
 		text: extracted text from pdf document, string
 		actual_count: estimated number of pages for pdf document, integer
-	
+
 	'''
 
 	# Determines location of file
@@ -47,9 +87,9 @@ def to_text(file_loc, page_nums = True):
 			num = 100
 		for i in range(num):
 			actual = i + 1
-			# Calls xpdf 
+			# Calls xpdf
 			subprocess.call(['pdftotext', '-f', str(actual),'-l', str(actual), full_file_loc])
-			# Opens file saved to disk 
+			# Opens file saved to disk
 			saved_file = full_file_loc.replace('.pdf','.txt')
 			file = open(saved_file,'r', encoding = "ISO-8859-1")
 			t = file.read()
@@ -69,18 +109,18 @@ def to_text(file_loc, page_nums = True):
 	os.remove(saved_file)
 
 	return text, actual_count
-	
+
 def extract_images(file_loc):
 	''' Extracts images from PDF document
 
 	Args
 	- - - - - - -
 		file_loc: path to pdf document, string
-	
+
 	Returns
 	- - - - - - -
 		image_locs: location of saved images files, list
-	
+
 	'''
 	# Determines location of file
 	if os.path.isabs(file_loc):
