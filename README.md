@@ -1,5 +1,6 @@
 Simple fork of the original repo to fix the bash installer scripts, if you had the *SystemExit: Did not detect correctly installed xpdf.* error this is the right repo for you.
-**Added to_png extraction wrapper**
+
+**PLUS: Added to_png extraction wrapper**
 
 xpdf python
 ===============================
