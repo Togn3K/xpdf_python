@@ -15,17 +15,19 @@ def countPages(filename):
 	data = open(filename,"r", encoding = "ISO-8859-1").read()
 	return len(rxcountpages.findall(data))
 
-def to_png(file_loc):
+def to_png(file_loc, pages_to_extract=()):
 	''' Converts PDF to PNG image
 
 	Args
 	- - - - - - -
 		file_loc: path to pdf document, string
+		pages_to_extract: list of pages to extract, if empty all pages will be extracted
 
 	Returns
 	- - - - - - -
 		pngs: list of PIL.PngImageFile
 	'''
+	pages=pages_to_extract
 	try:
 		if os.path.isabs(file_loc):
 			full_file_loc = file_loc
@@ -40,15 +42,16 @@ def to_png(file_loc):
 			num = 100
 		for i in range(num):
 			actual = i + 1
-			subprocess.call(['pdftopng', '-f', str(actual),'-l', str(actual), full_file_loc, full_file_loc.replace('.pdf','')])
-			# Opens file saved to disk
-			num_string = '-' + str(actual).zfill(6) + '.png'
-			saved_file = full_file_loc.replace('.pdf',num_string)
-			image = Image.open(saved_file)
-			pngs.append(image)
+			if (not pages) or (pages and any(actual is element for element in pages)):
+				subprocess.call(['pdftopng', '-f', str(actual),'-l', str(actual), full_file_loc, full_file_loc.replace('.pdf','')])
+				# Opens file saved to disk
+				num_string = '-' + str(actual).zfill(6) + '.png'
+				saved_file = full_file_loc.replace('.pdf',num_string)
+				image = Image.open(saved_file)
+				pngs.append(image)
+				image.close()
+				os.remove(saved_file)
 			actual_count += 1
-			image.close()
-			os.remove(saved_file)
 		return pngs
 	except NameError:
 		raise ImportError("Pillow library is not installed!")
