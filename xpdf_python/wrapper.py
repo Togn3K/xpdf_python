@@ -49,7 +49,6 @@ def to_png(file_loc, pages_to_extract=()):
 				saved_file = full_file_loc.replace('.pdf',num_string)
 				image = Image.open(saved_file)
 				pngs.append(image)
-				image.close()
 				os.remove(saved_file)
 			actual_count += 1
 		return pngs
