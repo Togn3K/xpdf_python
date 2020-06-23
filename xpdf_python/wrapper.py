@@ -15,13 +15,14 @@ def countPages(filename):
 	data = open(filename,"r", encoding = "ISO-8859-1").read()
 	return len(rxcountpages.findall(data))
 
-def to_png(file_loc, pages_to_extract=()):
+def to_png(file_loc, pages_to_extract=(), resolution=150):
 	''' Converts PDF to PNG image
 
 	Args
 	- - - - - - -
 		file_loc: path to pdf document, string
 		pages_to_extract: list of pages to extract, if empty all pages will be extracted
+		resolution: integer, resolution of extracted images in DPI (default is 150)
 
 	Returns
 	- - - - - - -
@@ -43,11 +44,11 @@ def to_png(file_loc, pages_to_extract=()):
 		for i in range(num):
 			actual = i + 1
 			if (not pages) or (pages and any(actual is element for element in pages)):
-				subprocess.call(['pdftopng', '-f', str(actual),'-l', str(actual), full_file_loc, full_file_loc.replace('.pdf','')])
+				subprocess.call(['pdftopng', '-f', str(actual),'-l', str(actual), '-r', str(int(resolution)), full_file_loc, full_file_loc.replace('.pdf','')])
 				# Opens file saved to disk
 				num_string = '-' + str(actual).zfill(6) + '.png'
 				saved_file = full_file_loc.replace('.pdf',num_string)
-				if os.path.exists(saved_file)_
+				if os.path.exists(saved_file):
 					image = Image.open(saved_file)
 					pngs.append(image)
 					os.remove(saved_file)
